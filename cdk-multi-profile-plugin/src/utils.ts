@@ -7,9 +7,10 @@ import { PrecedenceProfileMapper } from './profile-mapper';
 
 const tokenCache = new MfaTokenCache();
 
+//(mfaSerial: string, callback: (err?: Error, token?: string) => void) => void
 export const tokenCodeFn = async (
   mfaSerial: string,
-  callback: (err?: unknown, token?: string) => void,
+  callback: (err?: Error, token?: string) => void,
 ): Promise<void> => {
   try {
     const { token } = await inquirer.prompt({
@@ -30,7 +31,7 @@ export const tokenCodeFn = async (
     return callback(undefined, token);
   } catch (e) {
     console.error('error:', e);
-    return callback(e, undefined);
+    return callback( new Error(`Error: ${e}`) , undefined);
   }
 };
 
