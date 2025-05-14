@@ -30,21 +30,16 @@ jobs:
 
       # Simpler approach - focus on just the package directory
       - name: Install and build only the package
-        run: |
-          cd cdk-multi-profile-plugin
-          echo "Installing dependencies for just the package..."
-          npm install
-          echo "Building the package..."
-          npm run build
+        run: npm install
+
+      # Simpler approach - focus on just the package directory
+      - name: Install and build only the package
+        run: npm run build
+
 
       # Only run publish on push to master or release
       - name: Publish package
         if: github.event_name == 'push' && github.ref == 'refs/heads/master' || github.event_name == 'release'
-        run: |
-          cd cdk-multi-profile-plugin
-          echo "Checking package.json configuration..."
-          cat package.json
-          echo "Publishing package..."
-          npm publish
+        run: npm publish
         env:
           NODE_AUTH_TOKEN: ${{ secrets.GITHUB_TOKEN }}

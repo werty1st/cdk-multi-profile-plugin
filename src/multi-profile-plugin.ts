@@ -1,5 +1,4 @@
-import { PluginHost } from 'aws-cdk/lib/api/plugin';
-
+import { PluginHost } from '@aws-cdk/toolkit-lib';
 import { IniFileCredentialProviderSource } from './ini-file-credential-provider-source';
 
 export class MultiProfilePlugin extends PluginHost {

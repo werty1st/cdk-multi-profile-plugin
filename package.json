@@ -1,24 +1,69 @@
 {
-  "name": "root",
-  "private": true,
-  "scripts": {
-    "build": "lerna run build",
-    "lint": "eslint '*/**/*.ts' --report-unused-disable-directives",
-    "lint:fix": "eslint '*/**/*.ts' --fix",
-    "outdated:all": "yarn outdated",
-    "upgrade:all": "yarn upgrade-interactive --latest"
-  },
-  "workspaces": [
-    "examples/*",
-    "cdk-multi-profile-plugin"
+  "name": "@werty1st/cdk-multi-profile-plugin",
+  "version": "3.0.0",
+  "description": "Adds multi profile/account, mfa and aws sso support to cdk apps",
+  "keywords": [
+    "aws",
+    "cdk",
+    "profile",
+    "mfa",
+    "mfaSerial",
+    "aws sso",
+    "sso",
+    "multi-account",
+    "plugin"
   ],
+  "license": "MIT",
+  "repository": {
+    "type": "git",
+    "url": "git+https://github.com/werty1st/cdk-multi-profile-plugin.git"
+  },
+  "bugs": {
+    "url": "https://github.com/werty1st/cdk-multi-profile-plugin/issues"
+  },
+  "homepage": "https://github.com/werty1st/cdk-multi-profile-plugin#readme",
+  "main": "lib/index.js",
+  "types": "lib/index.d.ts",
+  "files": [
+    "lib"
+  ],
+  "publishConfig": {
+    "access": "public",
+    "registry": "https://npm.pkg.github.com/"
+  },
+  "scripts": {
+    "build": "rimraf lib && tsc",
+    "build:watch": "rimraf lib && tsc -w",
+    "prepare": "npm run build"
+  },
+  "dependencies": {
+    "colors": "1.4.0",
+    "fs-extra": "^11.3.0",
+    "ini": "^5.0.0",
+    "inquirer": "^12.6.1",
+    "lodash.isempty": "^4.4.0"
+  },
+  "peerDependencies": {
+    "@aws-cdk/toolkit-lib": "^0.3.5",
+    "@aws-sdk/credential-provider-sso": "^3.808.0",
+    "@aws-sdk/credential-providers": "^3.808.0"
+  },
   "devDependencies": {
-    "@typescript-eslint/eslint-plugin": "^8.32.1",
-    "@typescript-eslint/parser": "^8.32.1",
-    "eslint": "^9.26.0",
-    "eslint-config-prettier": "^10.1.5",
-    "eslint-plugin-prettier": "^5.4.0",
-    "lerna": "^8.2.2",
-    "prettier": "^3.5.3"
+    "@aws-cdk/toolkit-lib": "^0.3.5",
+    "@aws-sdk/credential-provider-sso": "^3.808.0",
+    "@aws-sdk/credential-providers": "^3.808.0",
+    "@types/fs-extra": "^11.0.4",
+    "@types/ini": "^4.1.1",
+    "@types/inquirer": "^9.0.8",
+    "@types/lodash.isempty": "^4.4.9",
+    "@types/node": "^22.15.18",
+    "rimraf": "^6.0.1",
+    "typescript": "^5.8.3"
+  },
+  "awsProfiles": {
+    "123": "default123",
+    "435": "default435",
+    "456": "default123",
+    "765": "default765"
   }
 }
