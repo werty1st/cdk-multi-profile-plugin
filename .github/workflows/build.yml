@@ -28,22 +28,24 @@ jobs:
           scope: '@werty1st'
           always-auth: true
 
-      - name: Install dependencies
-        run: yarn install --frozen-lockfile
-        
-      - name: Build package
-        run: yarn build
+      # Clean approach - using npm instead of yarn
+      - name: Install dependencies with npm
+        run: |
+          echo "Switching to npm for CI/CD"
+          rm -rf node_modules */node_modules */*/node_modules
+          npm ci
+
+      - name: Build all packages
+        run: npm run build
       
       # Only run publish on push to master or release
       - name: Publish package
         if: github.event_name == 'push' && github.ref == 'refs/heads/master' || github.event_name == 'release'
         run: |
-          # Change to package directory
           cd cdk-multi-profile-plugin
-          # Make sure package name includes the scope
           echo "Checking package.json configuration..."
           cat package.json
-          # Publish package
+          echo "Publishing package..."
           npm publish
         env:
           NODE_AUTH_TOKEN: ${{ secrets.GITHUB_TOKEN }}
