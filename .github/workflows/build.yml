@@ -45,7 +45,7 @@ jobs:
       - name: Download build artifacts
         uses: actions/download-artifact@v2
         with:
-          name: dist
+          name: lib
 
       # --- pick one of these, depending on your registry ---
 
