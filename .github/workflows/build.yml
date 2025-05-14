@@ -11,13 +11,14 @@ on:
       - master
     paths:
       - 'cdk-multi-profile-plugin/**'
+  workflow_dispatch:
 
 jobs:
   build:
     runs-on: ubuntu-latest
     strategy:
       matrix:
-        node-version: ['18', '20', '22']
+        node-version: ['14', '16', '18']
     name: Node ${{ matrix.node-version }} build
     steps:
       - name: Checkout code
