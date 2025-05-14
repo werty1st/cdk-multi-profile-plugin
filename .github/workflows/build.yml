@@ -23,9 +23,15 @@ jobs:
         with:
           node-version: '20.x'
           registry-url: 'https://npm.pkg.github.com'
-          # Defaults to the user or organization that owns the workflow file
-          scope: '@octocat'
-      - run: yarn
-      - run: yarn npm publish
+          scope: '@octocat'       # your package scope
+          always-auth: true       # ensure yarn also authenticates
+          
+      - name: 📦 Install dependencies
+        run: yarn install --frozen-lockfile
+
+      - name: Publish to GitHub Packages
+        run: yarn publish \
+              --non-interactive \
+              --access public
         env:
           NODE_AUTH_TOKEN: ${{ secrets.GITHUB_TOKEN }}
