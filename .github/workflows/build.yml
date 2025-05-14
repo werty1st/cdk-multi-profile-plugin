@@ -23,7 +23,7 @@ jobs:
         with:
           node-version: '20.x'
           registry-url: 'https://npm.pkg.github.com'
-          scope: '@octocat'       # your package scope
+          scope: '@werty1st'      # your npm scope here
           always-auth: true       # ensure yarn also authenticates
           
       - name: 📦 Install dependencies
