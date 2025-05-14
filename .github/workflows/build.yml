@@ -1,4 +1,4 @@
-name: Build
+name: Build and Publish
 on:
   push:
     branches:
@@ -17,19 +17,33 @@ jobs:
       contents: read
       packages: write
     steps:
-      - uses: actions/checkout@v4
-      # Setup .npmrc file to publish to GitHub Packages
-      - uses: actions/setup-node@v4
+      - name: Checkout repository
+        uses: actions/checkout@v4
+
+      - name: Setup Node.js
+        uses: actions/setup-node@v4
         with:
           node-version: '20.x'
           registry-url: 'https://npm.pkg.github.com'
-          scope: '@werty1st'      # your npm scope here
-          always-auth: true       # ensure yarn also authenticates
-          
-      - name: Install all workspaces
-        run: yarn install --frozen-lockfile
+          scope: '@werty1st'
+          always-auth: true
 
-      - name: Publish only the plugin workspace
-        run: yarn workspace @werty1st/cdk-multi-profile-plugin publish --non-interactive
+      - name: Install dependencies
+        run: yarn install --frozen-lockfile
+        
+      - name: Build package
+        run: yarn build
+      
+      # Only run publish on push to master or release
+      - name: Publish package
+        if: github.event_name == 'push' && github.ref == 'refs/heads/master' || github.event_name == 'release'
+        run: |
+          # Change to package directory
+          cd cdk-multi-profile-plugin
+          # Make sure package name includes the scope
+          echo "Checking package.json configuration..."
+          cat package.json
+          # Publish package
+          npm publish
         env:
           NODE_AUTH_TOKEN: ${{ secrets.GITHUB_TOKEN }}
