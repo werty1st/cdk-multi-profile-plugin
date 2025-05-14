@@ -26,10 +26,11 @@ jobs:
           scope: '@werty1st'      # your npm scope here
           always-auth: true       # ensure yarn also authenticates
           
-      - name: Install all workspaces
-        run: yarn install --frozen-lockfile
-
-      - name: Publish plugin workspace
-        run: yarn workspace @werty1st/cdk-multi-profile-plugin publish --non-interactive
+      - name: Publish plugin via cd
+        run: |
+          mv cdk-multi-profile-plugin ../plugin
+          cd plugin
+          yarn install --frozen-lockfile
+          yarn publish --non-interactive
         env:
           NODE_AUTH_TOKEN: ${{ secrets.GITHUB_TOKEN }}
