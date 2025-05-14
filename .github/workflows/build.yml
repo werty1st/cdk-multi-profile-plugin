@@ -27,9 +27,11 @@ jobs:
           always-auth: true       # ensure yarn also authenticates
           
       - name: 📦 Install dependencies
+        working-directory: cdk-multi-profile-plugin
         run: yarn install --frozen-lockfile
 
       - name: Publish to GitHub Packages
+        working-directory: cdk-multi-profile-plugin
         run: yarn publish --non-interactive --access public
         env:
           NODE_AUTH_TOKEN: ${{ secrets.GITHUB_TOKEN }}
