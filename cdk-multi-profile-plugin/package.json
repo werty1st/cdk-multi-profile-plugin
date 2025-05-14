@@ -42,14 +42,14 @@
   "peerDependencies": {
     "@aws-cdk/cli-plugin-contract": "^2.180.2",
     "@aws-cdk/toolkit-lib": "^0.3.5",
-    "@aws-sdk/credential-providers": "^3.808.0",
-    "@aws-sdk/credential-provider-sso": "^3.808.0"
+    "@aws-sdk/credential-provider-sso": "^3.808.0",
+    "@aws-sdk/credential-providers": "^3.808.0"
   },
   "devDependencies": {
     "@aws-cdk/cli-plugin-contract": "^2.180.2",
     "@aws-cdk/toolkit-lib": "^0.3.5",
-    "@aws-sdk/credential-providers": "^3.808.0",
     "@aws-sdk/credential-provider-sso": "^3.808.0",
+    "@aws-sdk/credential-providers": "^3.808.0",
     "@types/fs-extra": "^11.0.4",
     "@types/ini": "^4.1.1",
     "@types/inquirer": "^9.0.8",
