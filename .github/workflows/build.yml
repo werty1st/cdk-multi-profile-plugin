@@ -28,16 +28,15 @@ jobs:
           scope: '@werty1st'
           always-auth: true
 
-      # Clean approach - using npm instead of yarn
-      - name: Install dependencies with npm
+      # Simpler approach - focus on just the package directory
+      - name: Install and build only the package
         run: |
-          echo "Switching to npm for CI/CD"
-          rm -rf node_modules */node_modules */*/node_modules
-          npm ci
+          cd cdk-multi-profile-plugin
+          echo "Installing dependencies for just the package..."
+          npm install
+          echo "Building the package..."
+          npm run build
 
-      - name: Build all packages
-        run: npm run build
-      
       # Only run publish on push to master or release
       - name: Publish package
         if: github.event_name == 'push' && github.ref == 'refs/heads/master' || github.event_name == 'release'
