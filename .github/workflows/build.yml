@@ -7,7 +7,9 @@ on:
     branches:
       - master
   workflow_dispatch:
-
+  push:
+    tags:
+      - 'v*.*.*'
 jobs:
   build:
     runs-on: ubuntu-latest
@@ -26,3 +28,32 @@ jobs:
         run: yarn build
       - name: Anti-tamper check
         run: git diff --exit-code
+      - name: Upload build artifacts
+        uses: actions/upload-artifact@v3
+        with:
+          name: lib
+          path: lib/
+
+
+  publish:
+    needs: build
+    if: startsWith(github.ref, 'refs/tags/v')   # only run on semver tags
+    runs-on: ubuntu-latest
+    steps:
+      - uses: actions/checkout@v3
+
+      - name: Download build artifacts
+        uses: actions/download-artifact@v3
+        with:
+          name: dist
+
+      # --- pick one of these, depending on your registry ---
+
+      # Option A: Publish to GitHub Packages
+      - name: Setup Node for GitHub Packages
+        uses: actions/setup-node@v3
+        with:
+          node-version: 22
+          registry-url: https://npm.pkg.github.com/
+      - name: Authenticate to GitHub Packages
+        run: echo "//npm.pkg.github.com/:_authToken=${{ secrets.GITHUB_TOKEN }}" > ~/.npmrc

@@ -27,6 +27,9 @@
   "files": [
     "lib"
   ],
+  "publishConfig": {
+    "registry": "https://npm.pkg.github.com/"
+  },
   "scripts": {
     "build": "rimraf lib && tsc",
     "build:watch": "rimraf lib && tsc -w",
