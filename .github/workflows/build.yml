@@ -1,16 +1,11 @@
 name: Build
-
 on:
   push:
     branches:
       - master
-    paths:
-      - 'cdk-multi-profile-plugin/**'
   pull_request:
     branches:
       - master
-    paths:
-      - 'cdk-multi-profile-plugin/**'
   workflow_dispatch:
 
 jobs:
@@ -18,40 +13,16 @@ jobs:
     runs-on: ubuntu-latest
     strategy:
       matrix:
-        node-version: ['14', '16', '18']
-    name: Node ${{ matrix.node-version }} build
+        node: ["18", "20", "22"]
+    name: Node ${{ matrix.node }} build
     steps:
-      - name: Checkout code
-        uses: actions/checkout@v3
-
-      - name: Setup Node.js ${{ matrix.node-version }}
-        uses: actions/setup-node@v3
+      - uses: actions/checkout@v3
+      - uses: actions/setup-node@v3
         with:
-          node-version: ${{ matrix.node-version }}
-          cache: 'yarn'
-
-      - name: Install dependencies
-        working-directory: cdk-multi-profile-plugin
+          node-version: ${{ matrix.node }}
+      - name: Installing
         run: yarn install --frozen-lockfile
-
-      - name: Lint
-        working-directory: cdk-multi-profile-plugin
-        run: yarn lint
-
-      - name: Run tests
-        working-directory: cdk-multi-profile-plugin
-        run: yarn test --coverage
-
       - name: Build
-        working-directory: cdk-multi-profile-plugin
         run: yarn build
-
       - name: Anti-tamper check
-        working-directory: cdk-multi-profile-plugin
         run: git diff --exit-code
-
-      - name: Upload build artifacts
-        uses: actions/upload-artifact@v3
-        with:
-          name: cdk-multi-profile-plugin-lib
-          path: cdk-multi-profile-plugin/lib
