@@ -35,25 +35,30 @@ jobs:
           path: lib/
 
 
-  publish:
-    needs: build
-    if: startsWith(github.ref, 'refs/tags/v')   # only run on semver tags
-    runs-on: ubuntu-latest
-    steps:
-      - uses: actions/checkout@v3
+publish:
+  needs: build
+  if: startsWith(github.ref, 'refs/tags/v')
+  runs-on: ubuntu-latest
+  steps:
+    - uses: actions/checkout@v3
 
-      - name: Download build artifacts
-        uses: actions/download-artifact@v2
-        with:
-          name: lib
+    - name: Setup Node.js
+      uses: actions/setup-node@v3
+      with:
+        node-version: 22
+        # choose your registry here:
+        registry-url: https://npm.pkg.github.com/
 
-      # --- pick one of these, depending on your registry ---
+    - name: Install deps & rebuild
+      run: |
+        yarn install --frozen-lockfile
+        yarn build
 
-      # Option A: Publish to GitHub Packages
-      - name: Setup Node for GitHub Packages
-        uses: actions/setup-node@v3
-        with:
-          node-version: 22
-          registry-url: https://npm.pkg.github.com/
-      - name: Authenticate to GitHub Packages
-        run: echo "//npm.pkg.github.com/:_authToken=${{ secrets.GITHUB_TOKEN }}" > ~/.npmrc
+    - name: Anti-tamper (optional)
+      run: git diff --exit-code
+
+    - name: Authenticate
+      run: echo "//npm.pkg.github.com/:_authToken=${{ secrets.GITHUB_TOKEN }}" > ~/.npmrc
+
+    - name: Publish
+      run: npm publish
