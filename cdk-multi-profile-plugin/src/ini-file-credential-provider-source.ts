@@ -1,7 +1,8 @@
 import { green } from 'colors/safe';
 import isEmpty from 'lodash.isempty';
-import { SharedIniFileCredentials, Credentials, SSO } from 'aws-sdk';
-import { CredentialProviderSource, Mode } from 'aws-cdk/lib/api/plugin';
+import { AwsCredentialIdentity } from '@aws-sdk/types';
+import { fromIni } from '@aws-sdk/credential-providers';
+import { SSO } from '@aws-sdk/client-sso';
 
 import { tokenCodeFn, getConfigFilename, getSSOCachePath } from './utils';
 import { ProfileCredentialsCache } from './profile-credentials-cache';
@@ -10,8 +11,13 @@ import { SSOLoginCache } from './sso-login-cache';
 
 const profileCredentialsCache = new ProfileCredentialsCache();
 
+enum ModeName {
+  ForReading,
+  ForWriting,
+}
+
 export class IniFileCredentialProviderSource
-  implements CredentialProviderSource
+  implements IniFileCredentialProviderSource
 {
   private profileConfig: ProfileConfig;
   private ssoLoginCache: SSOLoginCache;
@@ -33,16 +39,15 @@ export class IniFileCredentialProviderSource
 
   public async getProvider(
     accountId: string,
-    mode: Mode,
-  ): Promise<Credentials> {
+    mode: ModeName,
+  ): Promise<AwsCredentialIdentity> {
     const profile = this.profiles[accountId];
 
     console.log('\n');
     console.log(
       ` 🚀  Using profile ${green(profile)} for account ${green(
         accountId,
-      )} in mode ${green(Mode[mode])}`,
-    );
+      )} in mode ${green(ModeName[mode])}`,);
     console.log('\n');
 
     let credentials = profileCredentialsCache.get(profile);
@@ -53,15 +58,15 @@ export class IniFileCredentialProviderSource
         const ssoSettings = this.profileConfig.getSSOSettings(profile);
         const ssoLogin = this.ssoLoginCache.getCachedLogin(ssoSettings);
 
-        const sso = new SSO({ region: ssoSettings.sso_region });
+        const ssoClient = new SSO({ region: ssoSettings.sso_region });
 
-        const { roleCredentials } = await sso
-          .getRoleCredentials({
-            accessToken: ssoLogin.accessToken,
-            accountId: ssoProfile.sso_account_id,
-            roleName: ssoProfile.sso_role_name,
-          })
-          .promise();
+        const response = await ssoClient.getRoleCredentials({
+          accessToken: ssoLogin.accessToken,
+          accountId: ssoProfile.sso_account_id,
+          roleName: ssoProfile.sso_role_name,
+        });
+
+        const roleCredentials = response.roleCredentials;
 
         if (
           !roleCredentials?.accessKeyId ||
@@ -70,17 +75,24 @@ export class IniFileCredentialProviderSource
         )
           throw new Error('Invalid roleCredentials!');
 
-        credentials = new Credentials({
+        credentials = {
           accessKeyId: roleCredentials.accessKeyId,
           secretAccessKey: roleCredentials.secretAccessKey,
           sessionToken: roleCredentials.sessionToken,
-        });
+          expiration: roleCredentials.expiration 
+            ? new Date(roleCredentials.expiration) 
+            : undefined
+        };
       } else {
-        credentials = new SharedIniFileCredentials({
-          tokenCodeFn,
-          filename: this.filename,
+        // In SDK v3, fromIni returns a credential provider function
+        const credentialProvider = fromIni({
           profile,
+          filepath: this.filename,
+          mfaCodeProvider: tokenCodeFn
         });
+        
+        // Execute the provider function to get credentials
+        credentials = await credentialProvider();
       }
 
       profileCredentialsCache.set(profile, credentials);

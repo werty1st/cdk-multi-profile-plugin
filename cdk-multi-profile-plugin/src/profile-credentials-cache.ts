@@ -1,21 +1,21 @@
-import { Credentials } from 'aws-sdk';
+import { AwsCredentialIdentity } from '@aws-sdk/types';
 
 export class ProfileCredentialsCache {
-  private readonly cache: { [profile: string]: Credentials };
+  private readonly cache: Record<string, AwsCredentialIdentity>;
 
   constructor() {
     this.cache = {};
   }
 
-  public set(profile: string, credentials: Credentials): void {
+  public set(profile: string, credentials: AwsCredentialIdentity): void {
     this.cache[profile] = credentials;
   }
 
-  public get(profile: string): Credentials | undefined {
+  public get(profile: string): AwsCredentialIdentity | undefined {
     return this.cache[profile];
   }
 
   public has(profile: string): boolean {
-    return !!this.cache[profile];
+    return this.cache[profile] !== undefined;
   }
 }

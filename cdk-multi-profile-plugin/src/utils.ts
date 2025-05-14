@@ -1,16 +1,14 @@
 import * as path from 'path';
 import * as os from 'os';
-import * as inquirer from 'inquirer';
+import inquirer from 'inquirer';
 
 import { MfaTokenCache } from './mfa-token-cache';
 import { PrecedenceProfileMapper } from './profile-mapper';
 
 const tokenCache = new MfaTokenCache();
 
-export const tokenCodeFn = async (
-  mfaSerial: string,
-  callback: (err?: Error, token?: string) => void,
-): Promise<void> => {
+// Für SDK v3 muss die Token-Funktion eine Promise zurückgeben statt einen Callback zu verwenden
+export const tokenCodeFn = async (mfaSerial: string): Promise<string> => {
   try {
     const { token } = await inquirer.prompt({
       name: 'token',
@@ -27,10 +25,10 @@ export const tokenCodeFn = async (
         return true;
       },
     });
-    return callback(undefined, token);
+    return token;
   } catch (e) {
     console.error('error:', e);
-    return callback(e as Error, undefined);
+    throw e; // In SDK v3 sollten wir den Fehler werfen statt ihn an einen Callback zu übergeben
   }
 };
 

@@ -3,7 +3,6 @@
   "private": true,
   "scripts": {
     "build": "lerna run build",
-    "test": "lerna exec -- yarn test",
     "lint": "eslint '*/**/*.ts' --report-unused-disable-directives",
     "lint:fix": "eslint '*/**/*.ts' --fix",
     "outdated:all": "yarn outdated",
@@ -14,13 +13,12 @@
     "cdk-multi-profile-plugin"
   ],
   "devDependencies": {
-    "@typescript-eslint/eslint-plugin": "^5.21.0",
-    "@typescript-eslint/parser": "^5.21.0",
-    "eslint": "^8.14.0",
-    "eslint-config-prettier": "^8.5.0",
-    "eslint-plugin-jest": "^26.1.5",
-    "eslint-plugin-prettier": "^4.0.0",
-    "lerna": "^4.0.0",
-    "prettier": "^2.1.1"
+    "@typescript-eslint/eslint-plugin": "^8.32.1",
+    "@typescript-eslint/parser": "^8.32.1",
+    "eslint": "^9.26.0",
+    "eslint-config-prettier": "^10.1.5",
+    "eslint-plugin-prettier": "^5.4.0",
+    "lerna": "^8.2.2",
+    "prettier": "^3.5.3"
   }
 }

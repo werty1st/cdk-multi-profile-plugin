@@ -8,7 +8,6 @@
   "scripts": {
     "build": "tsc",
     "watch": "tsc -w",
-    "test": "jest",
     "deploy": "cdk deploy Example*",
     "deploy:ignore": "IGNORE_CDK_MULTI_PROFILE_PLUGIN=false cdk deploy Example*",
     "synth": "cdk synth Example*",
@@ -16,20 +15,16 @@
     "destroy": "cdk destroy Example*"
   },
   "dependencies": {
-    "aws-cdk-lib": "^2.15.0",
-    "constructs": "^10.0.129",
+    "aws-cdk-lib": "^2.195.0",
+    "constructs": "^10.4.2",
     "source-map-support": "^0.5.21"
   },
   "devDependencies": {
-    "@aws-cdk/assert": "^2.15.0",
-    "@types/jest": "^27.4.1",
-    "aws-cdk": "^2.15.0",
-    "cdk-multi-profile-plugin": "^2.1.0",
-    "jest": "^27.4.1",
-    "jest-cdk-snapshot": "^2.0.1",
-    "ts-jest": "^27.1.4",
-    "ts-node": "^10.7.0",
-    "typescript": "^4.0.2"
+    "@aws-cdk/assert": "^2.68.0",
+    "aws-cdk": "^2.1015.0",
+    "cdk-multi-profile-plugin": "^3.0.0",
+    "ts-node": "^10.9.2",
+    "typescript": "^5.8.3"
   },
   "awsProfiles": {
     "123": "default123",
